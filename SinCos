@@ -1,0 +1,71 @@
+SinCos
+
+
+#include <SPI.h>
+#include <Wire.h>
+#include <math.h>
+
+#include <Adafruit_GFX.h>
+#include <Adafruit_SSD1306.h>
+#define WIRE Wire
+
+#define sWidth 128
+#define sHeight 64
+
+
+Adafruit_SSD1306 display = Adafruit_SSD1306(sWidth, sHeight, &WIRE);
+
+void setup() {
+  Serial.begin(9600);
+  display.begin(SSD1306_SWITCHCAPVCC, 0x3C); // Address 0x3C for 128x32
+
+
+  display.display();
+  display.clearDisplay();
+}
+
+
+
+
+
+int xCenter = sWidth / 2;
+int yTop = 0;
+int yBottom = sHeight;
+int lLength = sHeight - 1;
+bool CCW = true;
+
+
+int x1, x2, y1, y2;
+double angle;
+
+
+
+void drawCircles() {
+  display.drawCircle(xCenter, yTop, lLength, WHITE);
+  display.drawCircle(xCenter, yTop, lLength / 2, WHITE);
+}
+
+void loop() {
+  for (int i = 90; i < 270; i += 1) {
+    display.clearDisplay();
+    drawCircles();
+
+    angle = i * DEG_TO_RAD;
+    x2 =       xCenter + sin(angle) * lLength;
+    y2 =       yTop - cos(angle) * lLength;
+
+    display.drawLine(xCenter, yTop, x2, y2, WHITE);
+
+    if(x2 == 18 && y2 == 43) {
+      display.drawLine(x2, y2, x2-20, y2-20, WHITE);
+    Serial.println("TRIGG#EW!");
+    delay(5000);
+}
+
+    Serial.println("x2 "+(String)x2+"    y2 "+(String)(y2));
+
+    
+    display.display();
+
+  }
+}
